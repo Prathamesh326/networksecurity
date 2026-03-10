@@ -3,5 +3,5 @@ pandas
 numpy
 setuptools
 certifi
-
+logging
 # -e .
