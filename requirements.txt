@@ -4,4 +4,7 @@ numpy
 setuptools
 certifi
 logging
+pymongo[srv]==3.12
+pymongo
+
 # -e .
