@@ -32,8 +32,8 @@ class DataIngestion:
             collection_name = self.data_ingestion_config.collection_name
             self.mongo_client = pymongo.MongoClient(MONGO_DB_URL)
             collection = self.mongo_client[db_name][collection_name]
-
             df = pd.DataFrame(list(collection.find()))
+            # print(db_name, collection_name, collection, df.head())
             if "_id"  in df.columns.to_list():
                 df=df.drop(columns=["_id"])
             df.replace({"na": np.nan},inplace=True)
@@ -42,7 +42,7 @@ class DataIngestion:
             raise NetworkSecurityException(e, sys) 
         
 
-    def export_data_inot_feature_store(self, df:pd.DataFrame):
+    def export_data_into_feature_store(self, df:pd.DataFrame):
         try:
             feature_store_file_path=self.data_ingestion_config.feature_store_file_path
             dir_path=os.path.dirname(feature_store_file_path)
@@ -55,6 +55,8 @@ class DataIngestion:
 
     def split_data_as_train_test(self,dataframe: pd.DataFrame):
         try:
+            # print(dataframe.shape)
+            # print(dataframe.head())
             train_set, test_set = train_test_split(
                 dataframe, test_size=self.data_ingestion_config.train_test_split_ratio
             )
@@ -87,7 +89,8 @@ class DataIngestion:
     def initiate_data_ingestion(self):
         try:
             dataframe = self.export_collection_as_df()
-            dataframe = self.export_data_inot_feature_store(dataframe)
+
+            dataframe = self.export_data_into_feature_store(dataframe)
             self.split_data_as_train_test(dataframe)
             dataingestionartifact=DataIngestionArtifact(
                 trained_file_path=self.data_ingestion_config.training_file_path,
